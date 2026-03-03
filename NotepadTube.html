@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NotepadTube Pro</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0f0f0f; color: white; margin: 0; }
+        header { background: #202020; padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+        .logo { color: #ff0000; font-size: 24px; font-weight: bold; text-decoration: none; }
+        .container { padding: 30px; }
+        
+        /* Auth & Upload UI */
+        .auth-box, .upload-box { background: #282828; padding: 20px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        input, button { padding: 10px; margin: 5px 0; border-radius: 4px; border: none; }
+        button { background: #3ea6ff; color: black; font-weight: bold; cursor: pointer; }
+        button:hover { background: #65b8ff; }
+
+        /* Video Grid */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .video-card { background: #181818; border-radius: 12px; overflow: hidden; }
+        video { width: 100%; aspect-ratio: 16/9; background: black; }
+        .info { padding: 12px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="#" class="logo">NotepadTube</a>
+    <div id="user-area">
+        <button onclick="showAuth()">Sign In / Create Account</button>
+    </div>
+</header>
+
+<div class="container">
+    <div id="authBox" class="auth-box">
+        <h2>Sign In</h2>
+        <input type="text" id="username" placeholder="Username"><br>
+        <input type="password" id="password" placeholder="Password"><br>
+        <button onclick="handleLogin()">Login</button>
+    </div>
+
+    <div id="uploadBox" class="upload-box">
+        <h2>Upload Video or Music</h2>
+        <input type="text" id="vTitle" placeholder="Title"><br>
+        <input type="file" id="vFile" accept="video/*,audio/*"><br>
+        <button onclick="handleUpload()">Publish</button>
+    </div>
+
+    <div class="video-grid" id="videoGrid">
+        </div>
+</div>
+
+<script>
+    // 1. SHOW AUTH BOX
+    function showAuth() {
+        document.getElementById('authBox').style.display = 'block';
+    }
+
+    // 2. MOCK LOGIN (In a real site, this checks a database)
+    function handleLogin() {
+        let user = document.getElementById('username').value;
+        if(user) {
+            document.getElementById('user-area').innerHTML = `<span>Welcome, <b>${user}</b></span> <button onclick="showUpload()">Upload</button>`;
+            document.getElementById('authBox').style.display = 'none';
+        }
+    }
+
+    // 3. SHOW UPLOAD BOX
+    function showUpload() {
+        document.getElementById('uploadBox').style.display = 'block';
+    }
+
+    // 4. MOCK UPLOAD (This creates a temporary link to the file on your PC)
+    function handleUpload() {
+        const title = document.getElementById('vTitle').value;
+        const fileInput = document.getElementById('vFile');
+        const file = fileInput.files[0];
+
+        if (file) {
+            const url = URL.createObjectURL(file); // Temporary link to your local file
+            const grid = document.getElementById('videoGrid');
+            
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.innerHTML = `
+                <video controls src="${url}"></video>
+                <div class="info">
+                    <h3>${title}</h3>
+                    <p>Uploaded by You • Just now</p>
+                </div>
+            `;
+            grid.prepend(card); // Put new video at the top
+            document.getElementById('uploadBox').style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
